@@ -26,7 +26,8 @@
 
 const config = {
     serverUrl: 'http://localhost:5000',
-    boardName: 'okay'
+	boardName: 'okay',
+	blockedTools: ['Ellipse', 'Circle', 'Grid', 'Hand', 'Straight line', 'Rectangle', 'Text']
 };
 
 var Tools = {};
@@ -165,7 +166,7 @@ Tools.list = {}; // An array of all known tools. {"toolName" : {toolObject}}
 
 Tools.isBlocked = function toolIsBanned(tool) {
 	if (tool.name.includes(",")) throw new Error("Tool Names must not contain a comma");
-	blocked_tools = Tools.server_config.BLOCKED_TOOLS || [];
+	blocked_tools = config.blockedTools || Tools.server_config.BLOCKED_TOOLS || [];
 	return blocked_tools.includes(tool.name);
 };
 
