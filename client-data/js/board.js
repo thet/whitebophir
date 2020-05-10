@@ -165,7 +165,8 @@ Tools.list = {}; // An array of all known tools. {"toolName" : {toolObject}}
 
 Tools.isBlocked = function toolIsBanned(tool) {
 	if (tool.name.includes(",")) throw new Error("Tool Names must not contain a comma");
-	return Tools.server_config.BLOCKED_TOOLS.includes(tool.name);
+	blocked_tools = Tools.server_config.BLOCKED_TOOLS || [];
+	return blocked_tools.includes(tool.name);
 };
 
 /**
