@@ -567,8 +567,14 @@ Tools.sizeChangeHandlers = [];
 Tools.setSize = (function size() {
 	var chooser = document.getElementById("chooseSize");
 
+	if (! chooser) {
+		return function (value) {
+			return 4;
+		};
+	}
+
 	function update() {
-		var size = Math.max(1, Math.min(50, chooser.value | 0));
+		var size = Math.max(1, Math.min(50, chooser.value || 0));
 		chooser.value = size;
 		Tools.sizeChangeHandlers.forEach(function (handler) {
 			handler(size);
@@ -587,6 +593,13 @@ Tools.getSize = (function () { return Tools.setSize() });
 
 Tools.getOpacity = (function opacity() {
 	var chooser = document.getElementById("chooseOpacity");
+
+	if (! chooser) {
+		return function () {
+			return 1;
+		}
+	}
+
 	var opacityIndicator = document.getElementById("opacityIndicator");
 
 	function update() {
