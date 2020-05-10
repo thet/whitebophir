@@ -24,6 +24,10 @@
  * @licend
  */
 
+const config = {
+    boardName: 'okay'
+};
+
 var Tools = {};
 
 Tools.i18n = (function i18n() {
@@ -86,8 +90,9 @@ Tools.connect = function () {
 Tools.connect();
 
 Tools.boardName = (function () {
-	var path = window.location.pathname.split("/");
-	return decodeURIComponent(path[path.length - 1]);
+	return config.boardName;
+	// var path = window.location.pathname.split("/");
+	// return decodeURIComponent(path[path.length - 1]);
 })();
 
 //Get the board as soon as the page is loaded
