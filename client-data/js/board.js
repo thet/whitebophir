@@ -25,6 +25,7 @@
  */
 
 const config = {
+    serverUrl: 'http://localhost:5000',
     boardName: 'okay'
 };
 
@@ -68,7 +69,8 @@ Tools.connect = function () {
 
 
 	this.socket = io.connect('', {
-		"path": window.location.pathname.split("/boards/")[0] + "/socket.io",
+		"path": config.serverUrl + "/socket.io",
+		// "path": window.location.pathname.split("/boards/")[0] + "/socket.io",
 		"reconnection": true,
 		"reconnectionDelay": 100, //Make the xhr connections as fast as possible
 		"timeout": 1000 * 60 * 20 // Timeout after 20 minutes
@@ -207,11 +209,11 @@ Tools.add = function (newTool) {
 	Tools.register(newTool);
 
 	if (newTool.stylesheet) {
-		Tools.HTML.addStylesheet(newTool.stylesheet);
+		Tools.HTML.addStylesheet(config.serverUrl + "/boards/" + newTool.stylesheet);
 	}
 
 	//Add the tool to the GUI
-	Tools.HTML.addTool(newTool.name, newTool.icon, newTool.iconHTML, newTool.shortcut, newTool.oneTouch);
+	Tools.HTML.addTool(newTool.name, config.serverUrl + "/boards/" + newTool.icon, newTool.iconHTML, newTool.shortcut, newTool.oneTouch);
 };
 
 Tools.change = function (toolName) {
