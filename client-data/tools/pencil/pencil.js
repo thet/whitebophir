@@ -135,7 +135,8 @@
 			"release": stopLine,
 		},
 		"draw": draw,
-		"mouseCursor": "url('tools/pencil/cursor.svg'), crosshair",
+		"mouseCursor": "crosshair",
+		//"mouseCursor": "url('tools/pencil/cursor.svg'), crosshair",
 		"icon": "tools/pencil/icon.svg",
 		"stylesheet": "tools/pencil/pencil.css"
 	});

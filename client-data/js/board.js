@@ -24,6 +24,13 @@
  * @licend
  */
 
+const config = {
+    serverUrl: 'http://localhost:5000',
+	boardName: 'okay',
+	blockedTools: ['Ellipse', 'Circle', 'Grid', 'Hand', 'Straight line', 'Rectangle', 'Text'],
+	defaultTool: 'Pencil'
+};
+
 var Tools = {};
 
 Tools.i18n = (function i18n() {
@@ -64,7 +71,8 @@ Tools.connect = function () {
 
 
 	this.socket = io.connect('', {
-		"path": window.location.pathname.split("/boards/")[0] + "/socket.io",
+		"path": config.serverUrl + "/socket.io",
+		// "path": window.location.pathname.split("/boards/")[0] + "/socket.io",
 		"reconnection": true,
 		"reconnectionDelay": 100, //Make the xhr connections as fast as possible
 		"timeout": 1000 * 60 * 20 // Timeout after 20 minutes
@@ -86,8 +94,9 @@ Tools.connect = function () {
 Tools.connect();
 
 Tools.boardName = (function () {
-	var path = window.location.pathname.split("/");
-	return decodeURIComponent(path[path.length - 1]);
+	return config.boardName;
+	// var path = window.location.pathname.split("/");
+	// return decodeURIComponent(path[path.length - 1]);
 })();
 
 //Get the board as soon as the page is loaded
@@ -158,7 +167,8 @@ Tools.list = {}; // An array of all known tools. {"toolName" : {toolObject}}
 
 Tools.isBlocked = function toolIsBanned(tool) {
 	if (tool.name.includes(",")) throw new Error("Tool Names must not contain a comma");
-	return Tools.server_config.BLOCKED_TOOLS.includes(tool.name);
+	blocked_tools = config.blockedTools || Tools.server_config.BLOCKED_TOOLS || [];
+	return blocked_tools.includes(tool.name);
 };
 
 /**
@@ -202,11 +212,11 @@ Tools.add = function (newTool) {
 	Tools.register(newTool);
 
 	if (newTool.stylesheet) {
-		Tools.HTML.addStylesheet(newTool.stylesheet);
+		Tools.HTML.addStylesheet(config.serverUrl + "/boards/" + newTool.stylesheet);
 	}
 
 	//Add the tool to the GUI
-	Tools.HTML.addTool(newTool.name, newTool.icon, newTool.iconHTML, newTool.shortcut, newTool.oneTouch);
+	Tools.HTML.addTool(newTool.name, config.serverUrl + "/boards/" + newTool.icon, newTool.iconHTML, newTool.shortcut, newTool.oneTouch);
 };
 
 Tools.change = function (toolName) {
@@ -558,8 +568,14 @@ Tools.sizeChangeHandlers = [];
 Tools.setSize = (function size() {
 	var chooser = document.getElementById("chooseSize");
 
+	if (! chooser) {
+		return function (value) {
+			return 4;
+		};
+	}
+
 	function update() {
-		var size = Math.max(1, Math.min(50, chooser.value | 0));
+		var size = Math.max(1, Math.min(50, chooser.value || 0));
 		chooser.value = size;
 		Tools.sizeChangeHandlers.forEach(function (handler) {
 			handler(size);
@@ -578,6 +594,13 @@ Tools.getSize = (function () { return Tools.setSize() });
 
 Tools.getOpacity = (function opacity() {
 	var chooser = document.getElementById("chooseOpacity");
+
+	if (! chooser) {
+		return function () {
+			return 1;
+		}
+	}
+
 	var opacityIndicator = document.getElementById("opacityIndicator");
 
 	function update() {
@@ -612,3 +635,21 @@ Tools.svg.height.baseVal.value = document.body.clientHeight;
  	"stylesheet" : "style.css",
 }
 */
+
+
+
+function docReady(fn) {
+	// see if DOM is already available
+	if (document.readyState === "complete" || document.readyState === "interactive") {
+		// call on next available tick
+		setTimeout(fn, 1);
+	} else {
+		document.addEventListener("DOMContentLoaded", fn);
+	}
+}
+
+docReady(function() {
+	// DOM is loaded and ready for manipulation here
+	Tools.change(config.defaultTool);
+});
+

@@ -28,7 +28,7 @@ Minitpl = (function () {
 
 	function Minitpl(elem, data) {
 		this.elem = (typeof (elem) === "string") ? document.querySelector(elem) : elem;
-		if (!elem) {
+		if (!this.elem) {
 			throw "Invalid element!";
 		}
 		this.parent = this.elem.parentNode;
